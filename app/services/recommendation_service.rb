@@ -8,7 +8,6 @@ class RecommendationService
   def self.rank_products(product_name, candidates)
     api_key = ENV["GROQ_RECOMMENDATION_API_KEY"]
 
-
     product_list = candidates.map(&:name).join("\n")
 
     prompt = <<~PROMPT
@@ -44,6 +43,9 @@ class RecommendationService
 
     response = http.request(request)
 
+    puts "RAW AI RESPONSE FROM GROQ API:"
+    puts response.body
+
     json = JSON.parse(response.body)
 
     return [] unless json["choices"]
@@ -53,7 +55,9 @@ class RecommendationService
     content.split("\n").map do |line|
       line.gsub(/^\d+\.?\s*/, "").strip
     end
-  rescue
+
+  rescue StandardError => e
+    puts "ERROR IN AI RECOMMENDATION: #{e.message}"
     []
   end
 end

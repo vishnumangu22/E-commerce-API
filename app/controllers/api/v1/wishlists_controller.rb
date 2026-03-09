@@ -1,7 +1,6 @@
 module Api
   module V1
     class WishlistsController < ApplicationController
-      # POST /api/v1/wishlist/add_item
       def add_item
         wishlist = find_or_create_wishlist
 
